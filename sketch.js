@@ -8,7 +8,7 @@ var upricemax = 0;
 //var sizeright;
 var upriceup;
 var upricedown;
-var margx1 = 40;
+var margx1 = 80;
 var margx2 = 40;
 var margx3 = 240;
 var margx4 = 40;
@@ -101,7 +101,7 @@ function setup() {
         x : 0,
         y : 0,
         h : 0,
-        w : 20,
+        w : 15,
     }
     lakasrec.name = rows[r].getString("name");
     lakasrec.size = rows[r].getNum("size");
@@ -168,10 +168,13 @@ function draw() {
     
     //draws horizontal axises for preference values
     
+    for (var x = 0; x < (baseline.x2 - margx1)/ 15; x++) {
     for (var i = 0; i < 4 ; i++) {
+        var x1 = margx1 + x * 15;
         var y1 = margy1+ i * likey /4;
+        point(x1, y1);   
+    }
         
-        line(margx1 + padx, y1, margx1 + padx + upricewidth, y1);
     }
     
     //line (pref_axis.x1 = x1(i))
@@ -199,9 +202,10 @@ class haziko{
         this.uprice=uprice;
     }
     show(){
-        stroke(80);
-        fill (100,20);
+        stroke(120);
+        fill (180,20);
         rect (this.pointx,this.pointy,this.length,this.width);
+        triangle (this.pointx,this.pointy,this.pointx + 10, this.pointy -10, this.pointx + this.length,this.pointy);
         //text (this.name,this.pointx,margy1+likey+20);
         //text (this.uprice,this.pointx,margy1+likey+50);
     }

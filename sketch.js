@@ -8,9 +8,9 @@ var upricemax = 0;
 //var sizeright;
 var upriceup;
 var upricedown;
-var margx1 = 80;
+var margx1 = 40;
 var margx2 = 40;
-var margx3 = 100;
+var margx3 = 240;
 var margx4 = 40;
 var margy1 = 60; 
 var margy2 = 60;
@@ -57,7 +57,7 @@ function setup() {
     //looking up min and max unit price
     var rows = table.getRows();
 
-    upricemin = 999;
+    upricemin = 9999999;
     upricemax = 0;
     
   for (var r = 0; r < rows.length; r++) {
@@ -69,12 +69,13 @@ function setup() {
     if (uprice > upricemax) {
         upricemax = uprice
     }
-      //print(uprice);
+        print(upricemin);
+        print(upricemax);
   }
   
   var upricediff = upricemax-upricemin;
 
-    //print(upricediff);
+    print(upricediff);
     upriceleft = margx1 + padx;
     upriceright = displayWidth -padx - margx2 - margx3 - margx4;
     likeup = margy1;
@@ -120,22 +121,22 @@ function setup() {
     
     
     lakasrec.x = map(lakasrec.uprice, upricemin, upricemax, upriceleft, upriceright);
-    lakasrec.y = map(lakasrec.loc + lakasrec.prop + lakasrec.cond + lakasrec.extr, 0, 16, margy1 + likey, margy1);
-    lakasrec.h = map(lakasrec.loc + lakasrec.cond + lakasrec.prop + lakasrec.extr, 0, 16, 0, likey);
+    lakasrec.y = map(lakasrec.loc + lakasrec.prop + lakasrec.cond + lakasrec.extr, 0, 12, margy1 + likey, margy1);
+    lakasrec.h = map(lakasrec.loc + lakasrec.cond + lakasrec.prop + lakasrec.extr, 0, 12, 0, likey);
     
-    print(lakasrec.x);
-    print(lakasrec.y);
-    print(lakasrec.h);
+    //print(lakasrec.x);
+    //print(lakasrec.y);
+    //print(lakasrec.h);
          
     //var x = 10 + r*30;
     
     //hazikok[r] = new haziko(x, 50, 20, 80);
-    //hazikok[r] = new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h);   
+    hazikok[r] = new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice);   
     }
     //hazikok.push(new haziko());
    
    // haziko1 = new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h);
-    haziko2 = new haziko(200,200,10,120);
+    //haziko2 = new haziko(200,200,10,120);
    
         
    // }
@@ -167,37 +168,42 @@ function draw() {
     
     //draws horizontal axises for preference values
     
-/*    for (var i = 0; i < 4 ; i++) {
-        line(margx1 + padx, margy + i * likey / 4, margx1 + padx + upricewidth, margy + i * likey)
+    for (var i = 0; i < 4 ; i++) {
+        var y1 = margy1+ i * likey /4;
+        
+        line(margx1 + padx, y1, margx1 + padx + upricewidth, y1);
     }
     
     //line (pref_axis.x1 = x1(i))
-    */
+    
 
     
     //haziko1.show();
-   /*for (var i=0; i< 4; i++) {
-        haziko[i].show();
+   for (var i=0; i< hazikok.length; i++) {
+        hazikok[i].show();
    }
    
-    //haziko1.show();*/
-    haziko2.show();
+    //haziko1.show();
+    //haziko2.show();
     
     
 }
 
 class haziko{
-    constructor(x,y,l,w){
+    constructor(x,y,l,w,name,uprice){
         this.pointx=x;
         this.pointy=y;
         this.length=l;
         this.width=w;
+        this.name=name;
+        this.uprice=uprice;
     }
     show(){
         stroke(80);
-        fill (100,100);
+        fill (100,20);
         rect (this.pointx,this.pointy,this.length,this.width);
-        text ("naugye.",this.pointx+30,this.pointy);
+        //text (this.name,this.pointx,margy1+likey+20);
+        //text (this.uprice,this.pointx,margy1+likey+50);
     }
 }
     

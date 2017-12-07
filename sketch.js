@@ -37,6 +37,8 @@ var hazikok = [];
 var todraw = 0;
 var avguprice = 0;
 var selectedidx = 0;
+
+var mTexture;
     
 function preload() {
     table = loadTable("lakasok 12v4.csv","csv","header");
@@ -48,10 +50,11 @@ function setup() {
 
     createCanvas(displayWidth, displayHeight);
     background(80);
-    
-
     // textFont(myFont);
     // textSize(24);
+    // this part is drawing everything once into the mTexture object
+    mTexture = createGraphics( displayWidth, displayHeight );
+    mTexture.background(80);
     
     //defining area to draw records to
     upricewidth = displayWidth - padx * 2 - margx1 - margx2 - margx3 - margx4;
@@ -131,8 +134,6 @@ function setup() {
     //print(lakasrec.x);
     //print(lakasrec.y);
     //print(lakasrec.h);
-         
-
     //hazikok[r] = new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice);
     hazikok.push(new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice, lakasrec.ID));
     }
@@ -140,16 +141,45 @@ function setup() {
     // draws a line at average unit price
     avguprice = avguprice / rows.length;
     avgx = map(avguprice, upricemin, upricemax, upriceleft, upriceright);
-    line(avgx, margy1 - 15,avgx, margy1 + likey + 15);
-    //hazikok.push(new haziko());
-   
+    mTexture.line(avgx, margy1 - 15,avgx, margy1 + likey + 15);
 
-    //haziko2 = new haziko(200,200,10,120);
-   
-        
-   // }
+    //draws horizontal axis for unit prices
+    var baseline = {
+        x1 : 0,
+        y1 : 0,
+        x2 : 0,
+        y2 : 0,
+    }
 
+    baseline.x1 = margx1;
+    baseline.y1 = margy1 + likey;
+    baseline.x2 = displayWidth - margx2-margx3-margx4;
+    baseline.y2 = baseline.y1;
+    mTexture.stroke(220);
+    //vonalvastagság
+    mTexture.line(baseline.x1,baseline.y1,baseline.x2,baseline.y2);
     
+    //draws arrow tip on above line (tip length = lakasrec.w *1,5)
+    mTexture.noStroke();
+    mTexture.fill(200);
+    mTexture.triangle(baseline.x2,baseline.y2 + 1, baseline.x2 + 1.5 * 15, baseline.y2 + 1, baseline.x2, baseline.y2 - 15 / 2);
+    
+    //draws horizontal dotted axises for preference values
+    
+    for (var x = 0; x < (baseline.x2 - margx1)/ 15; x++) {
+    for (var i = 0; i < 4 ; i++) {
+        var x1 = margx1 + x * 15;
+        var y1 = margy1+ i * likey /4;
+        mTexture.stroke(220);
+        mTexture.point(x1, y1);   
+        mTexture.line (margx1 - 20, y1,margx1, y1);
+    }        
+    }
+
+   for (var i=0; i< hazikok.length; i++) {
+        hazikok[i].show();
+   } 
+image( mTexture, 0,0 );
 
 }
 function holvagyok(x,y) {
@@ -173,13 +203,18 @@ function holvagyok(x,y) {
     selectedidx = idx;
 }
 function mousePressed() {
- holvagyok(mouseX,mouseY);
-       for (var i=0; i< hazikok.length; i++) {
-        hazikok[i].show();
-       }
+    holvagyok(mouseX,mouseY);
+    image( mTexture, 0,0 );
+    if (selectedidx != -1){    
+        hazikok[selectedidx].showCanvas();
+        textSize(16);
+        textAlign(LEFT);
+        text(hazikok[selectedidx].name,hazikok[selectedidx].pointx + hazikok[selectedidx].width, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 20);
+    }
+       
 }
 function draw() {
-    if (todraw == 0){
+    /*if (todraw == 0){
    //draws horizontal axis for unit prices
     var baseline = {
         x1 : 0,
@@ -229,7 +264,7 @@ function draw() {
     //haziko2.show();
     todraw = 1;
     
-}
+}*/
 }
 
 class haziko{
@@ -257,6 +292,23 @@ class haziko{
    */
     show(){
         //stroke(120);
+        mTexture.noStroke();
+        if (this.selected == 0) {
+            mTexture.fill (this.brightness, this.alpha);    
+        }
+        else{
+            mTexture.fill (220, 255);
+        }
+        mTexture.rect (this.pointx,this.pointy,this.width,this.length);
+        mTexture.triangle (this.pointx,this.pointy,this.pointx + this.width / 2, this.pointy - this.width/2, this.pointx + this.width, this.pointy);
+        mTexture.stroke (30);
+        mTexture.line (this.pointx + this.width /2, this.pointy + this.length +1, this.pointx + this.width / 2, this.pointy + this.length + 15 );
+        //text (this.name,this.pointx,margy1+likey+20);
+        //text (this.uprice,this.pointx,margy1+likey+50);
+    }
+
+    showCanvas(){
+        //stroke(120);
         noStroke();
         if (this.selected == 0) {
             fill (this.brightness, this.alpha);    
@@ -271,8 +323,7 @@ class haziko{
         //text (this.name,this.pointx,margy1+likey+20);
         //text (this.uprice,this.pointx,margy1+likey+50);
     }
-
-   
+  
 }
     
     

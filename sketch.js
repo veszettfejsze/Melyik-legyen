@@ -34,6 +34,8 @@ var haziko1;
 var haziko2;
 
 var hazikok = [];
+var todraw = 0;
+var avguprice = 0;
     
 function preload() {
     table = loadTable("lakasok 12v4.csv","csv","header");
@@ -44,7 +46,7 @@ function preload() {
 function setup() {
 
     createCanvas(displayWidth, displayHeight);
-    background(235);
+    background(80);
     
 
     // textFont(myFont);
@@ -119,6 +121,7 @@ function setup() {
     lakasrec.view = rows[r].getNum("view");
     lakasrec.garden = rows[r].getNum("garden");
     
+    avguprice = avguprice + lakasrec.uprice;
     
     lakasrec.x = map(lakasrec.uprice, upricemin, upricemax, upriceleft, upriceright);
     lakasrec.y = map(lakasrec.loc + lakasrec.prop + lakasrec.cond + lakasrec.extr, 0, 12, margy1 + likey, margy1);
@@ -128,11 +131,14 @@ function setup() {
     //print(lakasrec.y);
     //print(lakasrec.h);
          
-    //var x = 10 + r*30;
-    
-    //hazikok[r] = new haziko(x, 50, 20, 80);
-    hazikok[r] = new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice);   
+
+    hazikok[r] = new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice);
     }
+    
+    // draws a line at average unit price
+    avguprice = avguprice / rows.length;
+    avgx = map(avguprice, upricemin, upricemax, upriceleft, upriceright);
+    line(avgx, margy1 - 15,avgx, margy1 + likey + 15);
     //hazikok.push(new haziko());
    
    // haziko1 = new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h);
@@ -146,6 +152,7 @@ function setup() {
 }
 
 function draw() {
+    if (todraw == 0){
    //draws horizontal axis for unit prices
     var baseline = {
         x1 : 0,
@@ -158,22 +165,26 @@ function draw() {
     baseline.y1 = margy1 + likey;
     baseline.x2 = displayWidth - margx2-margx3-margx4;
     baseline.y2 = baseline.y1;
-    stroke(80);
+    stroke(220);
     //vonalvastagság
     line(baseline.x1,baseline.y1,baseline.x2,baseline.y2);
     
-    //draws arrow tip on above line
-    //fill(80);
-    //forgat-rajzol-forgat ld nyilak példa
+    //draws arrow tip on above line (tip length = lakasrec.w *1,5)
+    noStroke();
+    fill(200);
+    triangle(baseline.x2,baseline.y2 + 1, baseline.x2 + 1.5 * 15, baseline.y2 + 1, baseline.x2, baseline.y2 - 15 / 2);
     
-    //draws horizontal axises for preference values
+    //draws horizontal dotted axises for preference values
     
     for (var x = 0; x < (baseline.x2 - margx1)/ 15; x++) {
     for (var i = 0; i < 4 ; i++) {
         var x1 = margx1 + x * 15;
         var y1 = margy1+ i * likey /4;
+        stroke(220);
         point(x1, y1);   
+        line (margx1 - 20, y1,margx1, y1);
     }
+        
         
     }
     
@@ -188,24 +199,28 @@ function draw() {
    
     //haziko1.show();
     //haziko2.show();
+    todraw = 1;
     
-    
+}
 }
 
 class haziko{
-    constructor(x,y,l,w,name,uprice){
+    constructor(x,y,w,l,name,uprice){
         this.pointx=x;
         this.pointy=y;
-        this.length=l;
         this.width=w;
+        this.length=l;
         this.name=name;
         this.uprice=uprice;
     }
     show(){
-        stroke(120);
-        fill (180,20);
-        rect (this.pointx,this.pointy,this.length,this.width);
-        triangle (this.pointx,this.pointy,this.pointx + 10, this.pointy -10, this.pointx + this.length,this.pointy);
+        //stroke(120);
+        noStroke();
+        fill (180, 180, 180, 70);
+        rect (this.pointx,this.pointy,this.width,this.length);
+        triangle (this.pointx,this.pointy,this.pointx + this.width / 2, this.pointy - this.width/2, this.pointx + this.width, this.pointy);
+        stroke (30);
+        line (this.pointx + this.width /2, this.pointy + this.length +1, this.pointx + this.width / 2, this.pointy + this.length + 15 );
         //text (this.name,this.pointx,margy1+likey+20);
         //text (this.uprice,this.pointx,margy1+likey+50);
     }

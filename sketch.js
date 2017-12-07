@@ -141,6 +141,7 @@ function setup() {
     // draws a line at average unit price
     avguprice = avguprice / rows.length;
     avgx = map(avguprice, upricemin, upricemax, upriceleft, upriceright);
+    mTexture.stroke(160);
     mTexture.line(avgx, margy1 - 15,avgx, margy1 + likey + 15);
 
     //draws horizontal axis for unit prices
@@ -202,7 +203,7 @@ function holvagyok(x,y) {
     }
     selectedidx = idx;
 }
-function mousePressed() {
+/*function mousePressed() {
     holvagyok(mouseX,mouseY);
     image( mTexture, 0,0 );
     if (selectedidx != -1){    
@@ -213,7 +214,17 @@ function mousePressed() {
     }
        
 }
+*/
 function draw() {
+    holvagyok(mouseX,mouseY);
+    image( mTexture, 0,0 );
+    if (selectedidx != -1){    
+        hazikok[selectedidx].showCanvas();
+        textSize(16);
+        textAlign(LEFT);
+        text(hazikok[selectedidx].name,hazikok[selectedidx].pointx + hazikok[selectedidx].width, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 20);
+    }
+    
     /*if (todraw == 0){
    //draws horizontal axis for unit prices
     var baseline = {

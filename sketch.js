@@ -36,6 +36,7 @@ var haziko2;
 var hazikok = [];
 var todraw = 0;
 var avguprice = 0;
+var selectedidx = 0;
     
 function preload() {
     table = loadTable("lakasok 12v4.csv","csv","header");
@@ -133,7 +134,7 @@ function setup() {
          
 
     //hazikok[r] = new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice);
-    hazikok.push(new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice));
+    hazikok.push(new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice, lakasrec.ID));
     }
     
     // draws a line at average unit price
@@ -151,7 +152,32 @@ function setup() {
     
 
 }
-
+function holvagyok(x,y) {
+    var dist = 9999;
+    var idx = -1;
+    for (var r = 0; r < hazikok.length; r++){
+        if ( (x >= hazikok[r].pointx && x <= (hazikok[r].pointx + hazikok[r].width))
+              &&
+             (y >= hazikok[r].pointy && y <= (hazikok[r].pointy + hazikok[r].length))
+           ) {
+            var d = abs(x - hazikok[r].pointx - hazikok[r].width / 2);
+            if ( d < dist) {
+                dist = d;
+                idx = r;
+            }
+        }
+    } 
+    if (idx != -1){
+        hazikok[idx].selected = 1;  
+    }
+    selectedidx = idx;
+}
+function mousePressed() {
+ holvagyok(mouseX,mouseY);
+       for (var i=0; i< hazikok.length; i++) {
+        hazikok[i].show();
+       }
+}
 function draw() {
     if (todraw == 0){
    //draws horizontal axis for unit prices
@@ -192,6 +218,7 @@ function draw() {
     //line (pref_axis.x1 = x1(i))
     
 
+        
     
     //haziko1.show();
    for (var i=0; i< hazikok.length; i++) {
@@ -206,18 +233,37 @@ function draw() {
 }
 
 class haziko{
-    constructor(x,y,w,l,name,uprice){
+    constructor(x,y,w,l,name,uprice,ID){
         this.pointx=x;
         this.pointy=y;
         this.width=w;
         this.length=l;
+        this.ID = ID;
         this.name=name;
         this.uprice=uprice;
+        this.brightness = 50;
+        this.alpha = 100;
+        this.selected = 0;
     }
+    /*clicked(x,y){
+        var d = dist(x,y,this.pointx,this.pointy)
+        if (d < this.width * 2){
+        this.brightness = 220;
+        this.alpha = 255;
+        this.show();
+        console.log(this.ID);
+        }
+   }   
+   */
     show(){
         //stroke(120);
         noStroke();
-        fill (180, 180, 180, 70);
+        if (this.selected == 0) {
+            fill (this.brightness, this.alpha);    
+        }
+        else{
+            fill (220, 255);
+        }
         rect (this.pointx,this.pointy,this.width,this.length);
         triangle (this.pointx,this.pointy,this.pointx + this.width / 2, this.pointy - this.width/2, this.pointx + this.width, this.pointy);
         stroke (30);
@@ -225,6 +271,8 @@ class haziko{
         //text (this.name,this.pointx,margy1+likey+20);
         //text (this.uprice,this.pointx,margy1+likey+50);
     }
+
+   
 }
     
     

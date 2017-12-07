@@ -71,13 +71,13 @@ function setup() {
     if (uprice > upricemax) {
         upricemax = uprice
     }
-        print(upricemin);
-        print(upricemax);
+        //print(upricemin);
+        //print(upricemax);
   }
   
   var upricediff = upricemax-upricemin;
 
-    print(upricediff);
+    //print(upricediff);
     upriceleft = margx1 + padx;
     upriceright = displayWidth -padx - margx2 - margx3 - margx4;
     likeup = margy1;
@@ -132,7 +132,8 @@ function setup() {
     //print(lakasrec.h);
          
 
-    hazikok[r] = new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice);
+    //hazikok[r] = new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice);
+    hazikok.push(new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice));
     }
     
     // draws a line at average unit price
@@ -141,7 +142,7 @@ function setup() {
     line(avgx, margy1 - 15,avgx, margy1 + likey + 15);
     //hazikok.push(new haziko());
    
-   // haziko1 = new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h);
+
     //haziko2 = new haziko(200,200,10,120);
    
         

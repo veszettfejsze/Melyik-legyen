@@ -14,7 +14,7 @@ var margx3 = 240;
 var margx4 = 40;
 var margy1 = 60; 
 var margy2 = 60;
-var margy3 = 40
+var margy3 = 40;
 var padx = 40;
 var pady = 40;
 
@@ -135,7 +135,7 @@ function setup() {
     //print(lakasrec.y);
     //print(lakasrec.h);
     //hazikok[r] = new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice);
-    hazikok.push(new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice, lakasrec.ID));
+    hazikok.push(new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice, lakasrec.ID,lakasrec.size, lakasrec.price, lakasrec.distr, lakasrec.loc, lakasrec.prop, lakasrec.cond, lakasrec.extr, lakasrec.liked, lakasrec.parking, lakasrec.view, lakasrec.garden, lakasrec.url));
     }
     
     // draws a line at average unit price
@@ -166,7 +166,6 @@ function setup() {
     mTexture.triangle(baseline.x2,baseline.y2 + 1, baseline.x2 + 1.5 * 15, baseline.y2 + 1, baseline.x2, baseline.y2 - 15 / 2);
     
     //draws horizontal dotted axises for preference values
-    
     for (var x = 0; x < (baseline.x2 - margx1)/ 15; x++) {
     for (var i = 0; i < 4 ; i++) {
         var x1 = margx1 + x * 15;
@@ -183,7 +182,9 @@ function setup() {
 image( mTexture, 0,0 );
 
 }
-function holvagyok(x,y) {
+function holvagyok(x,y) 
+//defines which exact record polygon is selected
+{
     var dist = 9999;
     var idx = -1;
     for (var r = 0; r < hazikok.length; r++){
@@ -215,6 +216,29 @@ function holvagyok(x,y) {
        
 }
 */
+function adatlap(i) 
+//defines how the datasheet of the selected record should look like
+{
+    //hazikok[i].size
+    noStroke();
+    fill(150,200);
+    rect(margx1, margy1 + likey + margy2, displayWidth - margx1 - margx2 - margx3 - margx4, displayHeight - margy3 * 2);
+    fill(20);
+    text(hazikok[i].name,margx1 + 15, margy1 + likey + margy2 + 20);
+    textAlign(RIGHT);
+    text(hazikok[i].ID, displayWidth - margx1 - margx2 - margx3 - margx4 - 5, margy1 + likey + margy2 + 20 );
+    stroke (60);
+    line(margx1 + 15, margy1 + likey + margy2 + 26, displayWidth - margx1  - margx2 - margx3 - margx4, margy1 + likey + margy2 + 26)
+    textSize(14);
+    textAlign(LEFT);
+    text("MÉRET:",margx1 + 15, margy1 + likey + margy2 + 44 );
+    text(hazikok[i].size, margx1 + 60, margy1 + likey + margy2 + 44);
+    text("ÁR:",margx1 + 15, margy1 + likey + margy2 + 60);
+    text(hazikok[i].price, margx1 + 60, margy1 + likey + margy2 + 60);
+    //URL
+    
+}
+
 function draw() {
     holvagyok(mouseX,mouseY);
     image( mTexture, 0,0 );
@@ -223,6 +247,7 @@ function draw() {
         textSize(16);
         textAlign(LEFT);
         text(hazikok[selectedidx].name,hazikok[selectedidx].pointx + hazikok[selectedidx].width, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 20);
+        adatlap(selectedidx);
     }
     
     /*if (todraw == 0){
@@ -279,14 +304,26 @@ function draw() {
 }
 
 class haziko{
-    constructor(x,y,w,l,name,uprice,ID){
+    constructor(x,y,w,l,name,uprice,ID,size,price,distr,loc,prop,cond,ext,liked,parking,view,garden,url){
         this.pointx=x;
         this.pointy=y;
         this.width=w;
         this.length=l;
-        this.ID = ID;
         this.name=name;
         this.uprice=uprice;
+        this.ID = ID;
+        this.size = size;
+        this.price = price;
+        this.district = distr;
+        this.locaton = loc;
+        this.property = prop;
+        this.condition = cond;
+        this.extras = ext;
+        this.liked = liked;
+        this.parking = parking,
+        this.view = view;
+        this.garden = garden;
+        this.url = url;
         this.brightness = 50;
         this.alpha = 100;
         this.selected = 0;

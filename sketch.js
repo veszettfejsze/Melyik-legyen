@@ -42,15 +42,15 @@ var mTexture;
     
 function preload() {
     table = loadTable("lakasok 12v4.csv","csv","header");
-    //myFont = loadFont("../common/DinBold.ttf");
-    //fontot kiválasztani
+    myFont = loadFont("../Arcon-Regular.otf");
+    
 }
 
 function setup() {
 
     createCanvas(displayWidth, displayHeight);
     background(80);
-    // textFont(myFont);
+    textFont(myFont);
     // textSize(24);
     // this part is drawing everything once into the mTexture object
     mTexture = createGraphics( displayWidth, displayHeight );
@@ -143,6 +143,10 @@ function setup() {
     avgx = map(avguprice, upricemin, upricemax, upriceleft, upriceright);
     mTexture.stroke(160);
     mTexture.line(avgx, margy1 - 15,avgx, margy1 + likey + 15);
+    //text - average unit price
+    mTexture.noStroke();
+    mTexture.fill(160);
+    mTexture.text("átlagos egységár (HUF/m2)",avgx + 8, margy1 - 4);
 
     //draws horizontal axis for unit prices
     var baseline = {
@@ -165,6 +169,8 @@ function setup() {
     mTexture.fill(200);
     mTexture.triangle(baseline.x2,baseline.y2 + 1, baseline.x2 + 1.5 * 15, baseline.y2 + 1, baseline.x2, baseline.y2 - 15 / 2);
     
+    //text - egységár HUF / m2
+    
     //draws horizontal dotted axises for preference values
     for (var x = 0; x < (baseline.x2 - margx1)/ 15; x++) {
     for (var i = 0; i < 4 ; i++) {
@@ -175,6 +181,8 @@ function setup() {
         mTexture.line (margx1 - 20, y1,margx1, y1);
     }        
     }
+    
+    //text - mennyire tetszik
 
    for (var i=0; i< hazikok.length; i++) {
         hazikok[i].show();
@@ -221,7 +229,7 @@ function adatlap(i)
 {
     //hazikok[i].size
     noStroke();
-    fill(150,200);
+    fill(135,206,255,130);
     rect(margx1, margy1 + likey + margy2, displayWidth - margx1 - margx2 - margx3 - margx4, displayHeight - margy3 * 2);
     fill(20);
     text(hazikok[i].name,margx1 + 15, margy1 + likey + margy2 + 20);
@@ -245,6 +253,7 @@ function draw() {
     if (selectedidx != -1){    
         hazikok[selectedidx].showCanvas();
         textSize(16);
+        noStroke();
         textAlign(LEFT);
         text(hazikok[selectedidx].name,hazikok[selectedidx].pointx + hazikok[selectedidx].width, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 20);
         adatlap(selectedidx);
@@ -351,6 +360,8 @@ class haziko{
         mTexture.triangle (this.pointx,this.pointy,this.pointx + this.width / 2, this.pointy - this.width/2, this.pointx + this.width, this.pointy);
         mTexture.stroke (30);
         mTexture.line (this.pointx + this.width /2, this.pointy + this.length +1, this.pointx + this.width / 2, this.pointy + this.length + 15 );
+        //shows unit prices on axis
+        
         //text (this.name,this.pointx,margy1+likey+20);
         //text (this.uprice,this.pointx,margy1+likey+50);
     }

@@ -24,8 +24,7 @@ var upricewidth
 var likey
 //var priceheight
 
-var boxx = 100;
-var boxy = 250;
+
 var distx = 40;
 
 
@@ -38,8 +37,23 @@ var todraw = 0;
 var avguprice = 0;
 var selectedidx = 0;
 
+var boxx = 100;
+var boxy = 250;
+
 var mTexture;
-    
+/*
+var boxtop;
+var boxbott;
+var boxy;
+var boxleft;
+var boxright;
+var boxx;
+var bspx;
+var bx;
+var bspy;
+var by;
+var valtozo;   
+*/
 function preload() {
     table = loadTable("lakasok 12v4.csv","csv","header");
     myFont = loadFont("../Arcon-Regular.otf");
@@ -55,6 +69,9 @@ function setup() {
     // this part is drawing everything once into the mTexture object
     mTexture = createGraphics( displayWidth, displayHeight );
     mTexture.background(80);
+    
+    //font beállítása
+    mTexture.textFont(myFont);
     
     //defining area to draw records to
     upricewidth = displayWidth - padx * 2 - margx1 - margx2 - margx3 - margx4;
@@ -161,8 +178,9 @@ function setup() {
     baseline.x2 = displayWidth - margx2-margx3-margx4;
     baseline.y2 = baseline.y1;
     mTexture.stroke(220);
-    //vonalvastagság
+ 
     mTexture.line(baseline.x1,baseline.y1,baseline.x2,baseline.y2);
+
     
     //draws arrow tip on above line (tip length = lakasrec.w *1,5)
     mTexture.noStroke();
@@ -170,7 +188,7 @@ function setup() {
     mTexture.triangle(baseline.x2,baseline.y2 + 1, baseline.x2 + 1.5 * 15, baseline.y2 + 1, baseline.x2, baseline.y2 - 15 / 2);
     
     //text - egységár HUF / m2
-    
+    mTexture.text("HUF/m2",baseline.x2 +30, baseline.y2 + 1);
     //draws horizontal dotted axises for preference values
     for (var x = 0; x < (baseline.x2 - margx1)/ 15; x++) {
     for (var i = 0; i < 4 ; i++) {
@@ -181,12 +199,26 @@ function setup() {
         mTexture.line (margx1 - 20, y1,margx1, y1);
     }        
     }
-    
-    //text - mennyire tetszik
+    //text to describe how much a record was liked
+    var string = ["nagyon","eléggé","azért", "kicsit"];
+    for (var i = 0; i<4; i++) {
+        var y1 = margy1 + i * likey /4;
+        mTexture.noStroke();
+        mTexture.fill(220);
+        mTexture.textAlign(RIGHT);
+        mTexture.text(string[i], margx1 - 24, y1 - 14 );
+        mTexture.text("tetszik", margx1 - 24, y1);
+    }
+
 
    for (var i=0; i< hazikok.length; i++) {
         hazikok[i].show();
    } 
+    
+
+    
+
+    
 image( mTexture, 0,0 );
 
 }
@@ -227,7 +259,7 @@ function holvagyok(x,y)
 function adatlap(i) 
 //defines how the datasheet of the selected record should look like
 {
-    //hazikok[i].size
+    //adatlap background rectangle
     var boxtop = margy1 + margy2 + likey;
     var boxbott = margy3;
     var boxy = displayHeight - boxtop - boxbott;
@@ -243,6 +275,11 @@ function adatlap(i)
     noStroke();
     fill(220,220,220,130);
     rect(boxleft, boxtop, boxx, boxy);
+    
+    //hazikok[i].size
+    noStroke();
+    //fill(220,220,220,130);
+    //rect(boxleft, boxtop, boxx, boxy);
     fill(20);
     text(hazikok[i].name,boxleft + bspx, boxtop + bspy + by);
     textAlign(RIGHT);
@@ -287,9 +324,9 @@ function adatlap(i)
     rect(boxleft + bx + bspx *2, (boxtop + bspy *4 + by * 4) - 20, extlength, 20);
     fill(40,255);
     textAlign(RIGHT);
-    text(":)", boxleft + bx *2 + bspx *2, boxtop + bspy * 1 + by * 1 - 23);
+    text(">>>", boxleft + bx *2 + bspx *2, boxtop + bspy * 1 + by * 1 - 23);
     textAlign(LEFT);
-    text(":|", boxleft + bx + bspx *2 + 5, boxtop + bspy * 1 + by * 1 - 23);
+    text(">", boxleft + bx + bspx *2 + 5, boxtop + bspy * 1 + by * 1 - 23);
     text("környék", boxleft + bx + bspx *2 + 5, boxtop + bspy * 1 + by * 1 +14);
     text("környék", boxleft + bx + bspx *2 + 5, boxtop + bspy * 1 + by * 1 +14);
     text("ingatlan", boxleft + bx + bspx *2 + 5, boxtop + bspy * 2 + by * 2 +14);
@@ -307,6 +344,9 @@ function draw() {
         noStroke();
         textAlign(LEFT);
         text(hazikok[selectedidx].name,hazikok[selectedidx].pointx + hazikok[selectedidx].width, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 20);
+        text(nfc(hazikok[selectedidx].uprice,0),hazikok[selectedidx].pointx + hazikok[selectedidx].width, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 40);
+        var w = textWidth(nfc(hazikok[selectedidx].uprice,0)) + 3;
+        text("HUF/m2",hazikok[selectedidx].pointx + hazikok[selectedidx].width + w, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 40);
         adatlap(selectedidx);
     }
     

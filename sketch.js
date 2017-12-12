@@ -275,7 +275,7 @@ function adatlap(i)
     var extlength = map(hazikok[i].extras, 0,4,0,bx);
     
     for (var i= 0; i<4; i++) {
-        fill(180,220);
+        fill(245,255);
         noStroke();
         rect(boxleft + bx + bspx * 2, (boxtop + bspy * (i + 1) + by * (i + 1) - 20 ), bx, 20);
         
@@ -285,32 +285,18 @@ function adatlap(i)
     rect(boxleft + bx + bspx *2, (boxtop + bspy *2 + by * 2) - 20, proplength, 20);
     rect(boxleft + bx + bspx *2, (boxtop + bspy *3 + by * 3) - 20, condlength, 20);
     rect(boxleft + bx + bspx *2, (boxtop + bspy *4 + by * 4) - 20, extlength, 20);
+    fill(40,255);
+    textAlign(RIGHT);
+    text(":)", boxleft + bx *2 + bspx *2, boxtop + bspy * 1 + by * 1 - 23);
+    textAlign(LEFT);
+    text(":|", boxleft + bx + bspx *2 + 5, boxtop + bspy * 1 + by * 1 - 23);
+    text("környék", boxleft + bx + bspx *2 + 5, boxtop + bspy * 1 + by * 1 +14);
+    text("környék", boxleft + bx + bspx *2 + 5, boxtop + bspy * 1 + by * 1 +14);
+    text("ingatlan", boxleft + bx + bspx *2 + 5, boxtop + bspy * 2 + by * 2 +14);
+    text("állapot", boxleft + bx + bspx *2 + 5, boxtop + bspy * 3 + by * 3 +14);
+    text("extrák", boxleft + bx + bspx *2 + 5, boxtop + bspy * 4 + by * 4 +14);
 }
-    /*var loclength = map(hazikok[i].locaton, 0,4,0,bx);
-    fill(180,220);
-    noStroke();
-    rect(boxleft + bx + bspx *2, (boxtop + bspy *1 + by * 1) - 14, bx, 14);
-    fill(60,220);
-    rect(boxleft + bx + bspx *2, (boxtop + bspy *1 + by * 1) - 14, loclength, 14);
-    var proplength = map(hazikok[i].property, 0,4,0,bx);
-    fill(180,220);
-    noStroke();
-    rect(boxleft + bx + bspx *2, (boxtop + bspy *2 + by * 2) - 20, bx, 20);
-    fill(60,220);
-    rect(boxleft + bx + bspx *2, (boxtop + bspy *2 + by * 2) - 14, proplength, 20);
-    var condlength = map(hazikok[i].condition, 0,4,0,bx);
-    fill(180,220);
-    noStroke();
-    rect(boxleft + bx + bspx *2, (boxtop + bspy *3 + by * 3) - 14, bx, 14);
-    fill(60,220);
-    rect(boxleft + bx + bspx *2, (boxtop + bspy *3 + by * 3) - 14, condlength, 14);
-    var extlength = map(hazikok[i].extras, 0,4,0,bx);
-    fill(180,220);
-    noStroke();
-    rect(boxleft + bx + bspx *2, (boxtop + bspy *4 + by * 4) - 14, bx, 14);
-    fill(60,220);
-    rect(boxleft + bx + bspx *2, (boxtop + bspy *4 + by * 4) - 14, extlength, 14);
-}*/
+
 
 function draw() {
     holvagyok(mouseX,mouseY);

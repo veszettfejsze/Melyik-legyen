@@ -228,24 +228,89 @@ function adatlap(i)
 //defines how the datasheet of the selected record should look like
 {
     //hazikok[i].size
+    var boxtop = margy1 + margy2 + likey;
+    var boxbott = margy3;
+    var boxy = displayHeight - boxtop - boxbott;
+    var boxleft = margx1;
+    var boxright = margx2 + margx3 + margx4;
+    var boxx = displayWidth - boxleft - boxright;
+    var bspx = 15;
+    var bx = (boxx - bspx * 4)/ 3;
+    var bspy = 5;
+    var by = (boxy - bspy * 6) / 5;
+    var valtozo = 90;
+    
     noStroke();
-    fill(135,206,255,130);
-    rect(margx1, margy1 + likey + margy2, displayWidth - margx1 - margx2 - margx3 - margx4, displayHeight - margy3 * 2);
+    fill(220,220,220,130);
+    rect(boxleft, boxtop, boxx, boxy);
     fill(20);
-    text(hazikok[i].name,margx1 + 15, margy1 + likey + margy2 + 20);
+    text(hazikok[i].name,boxleft + bspx, boxtop + bspy + by);
     textAlign(RIGHT);
-    text(hazikok[i].ID, displayWidth - margx1 - margx2 - margx3 - margx4 - 5, margy1 + likey + margy2 + 20 );
+    //text(hazikok[i].ID, displayWidth - margx1 - margx2 - margx3 - margx4 - 5, margy1 + likey + margy2 + 20 );
     stroke (60);
-    line(margx1 + 15, margy1 + likey + margy2 + 26, displayWidth - margx1  - margx2 - margx3 - margx4, margy1 + likey + margy2 + 26)
+    line(boxleft + bspx, boxtop + bspy + by + bspy /2, boxright - bspx, boxtop + bspy + by + bspy /2);
     textSize(14);
     textAlign(LEFT);
-    text("MÉRET:",margx1 + 15, margy1 + likey + margy2 + 44 );
-    text(hazikok[i].size, margx1 + 60, margy1 + likey + margy2 + 44);
-    text("ÁR:",margx1 + 15, margy1 + likey + margy2 + 60);
-    text(hazikok[i].price, margx1 + 60, margy1 + likey + margy2 + 60);
-    //URL
+    text("MÉRET (m2):", boxleft + bspx, boxtop + bspy * 2 + by * 2);
+    text(hazikok[i].size, boxleft + bspx + valtozo, boxtop + bspy *2 + by *2 );
+    text("ÁR (MHUF):",boxleft + bspx, boxtop + bspy *3 +by *3 );
+    text(hazikok[i].price, boxleft + bspx + valtozo, boxtop + bspy *3 +by *3 );
+    text("KERÜLET:",boxleft + bspx, boxtop + bspy *4 +by *4 );
+    text(hazikok[i].district, boxleft + bspx + valtozo, boxtop + bspy *4 +by *4 );
+    //text("LINK:",boxleft + bspx, boxtop + bspy *5 +by *5 );
+    //text(hazikok[i].url, boxleft + bspx + valtozo, boxtop + bspy *5 +by *5 );
+    //kiszámoltatni a leghosszabb stringet és annak a méretét beadni a 80 px helyett
+    //ikonok helyei
+    //fill(220,220);
     
+    /*console.log(bspx);
+    for (var i=0; i< 4; i++) {
+         var ybx =  by * (1 +i);
+         rect(boxleft + bx, boxtop + ybx, boxleft + bx + bspx, boxtop + ybx + bspx + bspy);
+    }*/
+    //showing loc,prop,cond,ext values
+    var loclength = map(hazikok[i].locaton, 0,4,0,bx);
+    var proplength = map(hazikok[i].property, 0,4,0,bx);
+    var condlength = map(hazikok[i].condition, 0,4,0,bx);
+    var extlength = map(hazikok[i].extras, 0,4,0,bx);
+    
+    for (var i= 0; i<4; i++) {
+        fill(180,220);
+        noStroke();
+        rect(boxleft + bx + bspx * 2, (boxtop + bspy * (i + 1) + by * (i + 1) - 20 ), bx, 20);
+        
+    }
+    fill(60,220);
+    rect(boxleft + bx + bspx *2, (boxtop + bspy *1 + by * 1) - 20, loclength, 20);
+    rect(boxleft + bx + bspx *2, (boxtop + bspy *2 + by * 2) - 20, proplength, 20);
+    rect(boxleft + bx + bspx *2, (boxtop + bspy *3 + by * 3) - 20, condlength, 20);
+    rect(boxleft + bx + bspx *2, (boxtop + bspy *4 + by * 4) - 20, extlength, 20);
 }
+    /*var loclength = map(hazikok[i].locaton, 0,4,0,bx);
+    fill(180,220);
+    noStroke();
+    rect(boxleft + bx + bspx *2, (boxtop + bspy *1 + by * 1) - 14, bx, 14);
+    fill(60,220);
+    rect(boxleft + bx + bspx *2, (boxtop + bspy *1 + by * 1) - 14, loclength, 14);
+    var proplength = map(hazikok[i].property, 0,4,0,bx);
+    fill(180,220);
+    noStroke();
+    rect(boxleft + bx + bspx *2, (boxtop + bspy *2 + by * 2) - 20, bx, 20);
+    fill(60,220);
+    rect(boxleft + bx + bspx *2, (boxtop + bspy *2 + by * 2) - 14, proplength, 20);
+    var condlength = map(hazikok[i].condition, 0,4,0,bx);
+    fill(180,220);
+    noStroke();
+    rect(boxleft + bx + bspx *2, (boxtop + bspy *3 + by * 3) - 14, bx, 14);
+    fill(60,220);
+    rect(boxleft + bx + bspx *2, (boxtop + bspy *3 + by * 3) - 14, condlength, 14);
+    var extlength = map(hazikok[i].extras, 0,4,0,bx);
+    fill(180,220);
+    noStroke();
+    rect(boxleft + bx + bspx *2, (boxtop + bspy *4 + by * 4) - 14, bx, 14);
+    fill(60,220);
+    rect(boxleft + bx + bspx *2, (boxtop + bspy *4 + by * 4) - 14, extlength, 14);
+}*/
 
 function draw() {
     holvagyok(mouseX,mouseY);

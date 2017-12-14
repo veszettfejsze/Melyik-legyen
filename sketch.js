@@ -37,11 +37,11 @@ var todraw = 0;
 var avguprice = 0;
 var selectedidx = 0;
 
-var boxx = 100;
-var boxy = 250;
+var boxx_ = 100;
+var boxy_ = 250;
 
 var mTexture;
-/*
+
 var boxtop;
 var boxbott;
 var boxy;
@@ -53,10 +53,18 @@ var bx;
 var bspy;
 var by;
 var valtozo;   
-*/
+var icon1;
+var icon2;
+var icon3;
+var icon4;
+
 function preload() {
     table = loadTable("lakasok 12v4.csv","csv","header");
     myFont = loadFont("../Arcon-Regular.otf");
+    icon1 = loadImage('images/like.png');
+   // icon2 = loadImage('images/parking.png');
+    icon3 = loadImage('images/view.png');
+    icon4 = loadImage('images/garden.png');
     
 }
 
@@ -75,7 +83,7 @@ function setup() {
     
     //defining area to draw records to
     upricewidth = displayWidth - padx * 2 - margx1 - margx2 - margx3 - margx4;
-    likey = (displayHeight - margy1 - margy2 - margy3- boxy);
+    likey = (displayHeight - margy1 - margy2 - margy3- boxy_);
     
     //looking up min and max unit price
     var rows = table.getRows();
@@ -209,15 +217,39 @@ function setup() {
         mTexture.text(string[i], margx1 - 24, y1 - 14 );
         mTexture.text("tetszik", margx1 - 24, y1);
     }
+    //placing of icons
+    for (var i = 0; i<4; i++){
+        var y = margy1 + i * likey / 4 + likey / 8;
+        mTexture.stroke(220);
+        mTexture.noFill();
+        mTexture.ellipse(displayWidth - margx4 - 2 * margx3 / 3, y, 30,30);
+    }
+    
+    //adatlap steady images
+    var boxtop = margy1 + margy2 + likey;
+    var boxbott = margy3;
+    var boxy = displayHeight - boxtop - boxbott;
+    var boxleft = margx1;
+    var boxright = margx2 + margx3 + margx4;
+    var boxx = displayWidth - boxleft - boxright;
+    var bspx = 15;
+    var bx = (boxx - bspx * 4)/ 3;
+    var bspy = 5;
+    var by = (boxy - bspy * 6) / 5;
+    var valtozo = 90;
+    
+    //adatlap background rectangle
+    mTexture.noStroke();
+    mTexture.fill(220,220,220,130);
+    //mTexture.rect(80,430,880,800);
+    mTexture.rect(boxleft, boxtop, boxx, boxy);
+    
+    
 
 
    for (var i=0; i< hazikok.length; i++) {
         hazikok[i].show();
    } 
-    
-
-    
-
     
 image( mTexture, 0,0 );
 
@@ -259,7 +291,7 @@ function holvagyok(x,y)
 function adatlap(i) 
 //defines how the datasheet of the selected record should look like
 {
-    //adatlap background rectangle
+    
     var boxtop = margy1 + margy2 + likey;
     var boxbott = margy3;
     var boxy = displayHeight - boxtop - boxbott;
@@ -272,11 +304,11 @@ function adatlap(i)
     var by = (boxy - bspy * 6) / 5;
     var valtozo = 90;
     
+    //adatlap background rectangle
     noStroke();
-    fill(220,220,220,130);
+    fill(220,220,220,180);
     rect(boxleft, boxtop, boxx, boxy);
     
-    //hazikok[i].size
     noStroke();
     //fill(220,220,220,130);
     //rect(boxleft, boxtop, boxx, boxy);
@@ -286,6 +318,8 @@ function adatlap(i)
     //text(hazikok[i].ID, displayWidth - margx1 - margx2 - margx3 - margx4 - 5, margy1 + likey + margy2 + 20 );
     stroke (60);
     line(boxleft + bspx, boxtop + bspy + by + bspy /2, boxright - bspx, boxtop + bspy + by + bspy /2);
+    fill(40);
+    noStroke();
     textSize(14);
     textAlign(LEFT);
     text("MÉRET (m2):", boxleft + bspx, boxtop + bspy * 2 + by * 2);
@@ -297,7 +331,21 @@ function adatlap(i)
     //text("LINK:",boxleft + bspx, boxtop + bspy *5 +by *5 );
     //text(hazikok[i].url, boxleft + bspx + valtozo, boxtop + bspy *5 +by *5 );
     //kiszámoltatni a leghosszabb stringet és annak a méretét beadni a 80 px helyett
+    
     //ikonok helyei
+    if (hazikok[i].liked == 1) {
+        image(icon1, boxleft + 3 * bspx + 2 * bx, boxtop + bspy);
+    }
+   // if (hazikok[i].parking == 1) {
+     //   image(icon2, boxleft + 3 * bspx + 2,4 * bx, boxtop + 2* bspy + by);
+    //}
+    if (hazikok[i].view == 1) {
+        image(icon3, boxleft + 3 * bspx + 2 * bx, boxtop + 3* bspy + 2 * by);
+    }
+    if (hazikok[i].garden == 1) {
+        image(icon4, boxleft + 3 * bspx + 2* bx, boxtop + 4* bspy + 3 * by);
+    }
+
     //fill(220,220);
     
     /*console.log(bspx);

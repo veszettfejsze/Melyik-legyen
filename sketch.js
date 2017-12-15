@@ -36,7 +36,7 @@ var hazikok = [];
 var buttons = [];
 var todraw = 0;
 var avguprice = 0;
-var selectedidx = 0;
+var selectedidx = -1;
 
 var boxx_ = 100;
 var boxy_ = 250;
@@ -164,7 +164,7 @@ function setup() {
     //print(lakasrec.y);
     //print(lakasrec.h);
     //hazikok[r] = new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice);
-    hazikok.push(new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice, lakasrec.ID,lakasrec.size, lakasrec.price, lakasrec.distr, lakasrec.loc, lakasrec.prop, lakasrec.cond, lakasrec.extr, lakasrec.liked, lakasrec.parking, lakasrec.view, lakasrec.garden, lakasrec.url));
+    hazikok.push(new haziko(r, lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice, lakasrec.ID,lakasrec.size, lakasrec.price, lakasrec.distr, lakasrec.loc, lakasrec.prop, lakasrec.cond, lakasrec.extr, lakasrec.liked, lakasrec.parking, lakasrec.view, lakasrec.garden, lakasrec.url));
     }
     
     // draws a line at average unit price
@@ -253,11 +253,11 @@ function setup() {
     
 
 
-   for (var i=0; i< hazikok.length; i++) {
-        hazikok[i].show();
-   } 
-    
-image( mTexture, 0,0 );
+   /*for (var i=0; i< hazikok.length; i++) {
+        //hazikok[i].show();
+   } */
+    refresh();
+
 
 }
 function holvagyok(x,y) 
@@ -269,6 +269,8 @@ function holvagyok(x,y)
         if ( (x >= hazikok[r].pointx && x <= (hazikok[r].pointx + hazikok[r].width))
               &&
              (y >= hazikok[r].pointy && y <= (hazikok[r].pointy + hazikok[r].length))
+              &&
+             (hazikok[r].highlighted == 1)
            ) {
             var d = abs(x - hazikok[r].pointx - hazikok[r].width / 2);
             if ( d < dist) {
@@ -277,9 +279,7 @@ function holvagyok(x,y)
             }
         }
     } 
-    if (idx != -1){
-        hazikok[idx].selected = 1;  
-    }
+
     selectedidx = idx;
 }
 /*function mousePressed() {
@@ -387,41 +387,22 @@ function adatlap(i)
     text("állapot", boxleft + bx + bspx *2 + 5, boxtop + bspy * 3 + by * 3 +14);
     text("extrák", boxleft + bx + bspx *2 + 5, boxtop + bspy * 4 + by * 4 +14);
 }
-function refresh(pmouseX,pmouseY){
-    if (prev_mouseX != pmouseX || prev_mouseY != pmouseY){
-        holvagyok(pmouseX,pmouseY);
-        if (prev_selectedidx != selectedidx) {
-            image( mTexture, 0,0 );
-            if (selectedidx != -1){    
-                hazikok[selectedidx].showCanvas();
-                textSize(16);
-                noStroke();
-                textAlign(LEFT);
-                text(hazikok[selectedidx].name,hazikok[selectedidx].pointx + hazikok[selectedidx].width, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 20);
-                text(nfc(hazikok[selectedidx].uprice,0),hazikok[selectedidx].pointx + hazikok[selectedidx].width, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 40);
-                var w = textWidth(nfc(hazikok[selectedidx].uprice,0)) + 3;
-                text("HUF/m2",hazikok[selectedidx].pointx + hazikok[selectedidx].width + w, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 40);
-                adatlap(selectedidx);
-            }
-        }
-        prev_selectedidx = selectedidx;
-    }
-    prev_mouseX = pmouseX;
-    prev_mouseY = pmouseY;
-    
-    for (var i = 0; i < buttons.length; i++){
-        buttons[i].show();
-    }
-}
+
 
 function refresh(){
 
-
+    console.log("refresh");
     image( mTexture, 0,0 );
+        for (var i = 0; i< hazikok.length; i++){
+             hazikok[i].showCanvas();
+            console.log(i);
+        }
+
     if (selectedidx != -1){    
-        hazikok[selectedidx].showCanvas();
+       
         textSize(16);
         noStroke();
+        fill(220);
         textAlign(LEFT);
         text(hazikok[selectedidx].name,hazikok[selectedidx].pointx + hazikok[selectedidx].width, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 20);
         text(nfc(hazikok[selectedidx].uprice,0),hazikok[selectedidx].pointx + hazikok[selectedidx].width, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 40);
@@ -442,13 +423,27 @@ function mousePressed(){
     for (var i = 0; i < buttons.length; i++){
         if (dist(buttons[i].buttonX, buttons[i].buttonY, mouseX, mouseY) < buttons[i].radius) {
             buttons[i].pressed = 1 - buttons[i].pressed;
-            console.log(buttons[i].pressed);
+            for (var j = 0; j < hazikok.length; j++){
+               if (
+                   (buttons[0].pressed == 0 || hazikok[j].liked == 1 )
+                   &&
+                   (buttons[1].pressed == 0 || hazikok[j].parking == 1 )
+                   &&
+                   (buttons[2].pressed == 0 || hazikok[j].view == 1 )
+                   &&
+                   (buttons[3].pressed == 0 || hazikok[j].garden == 1 )
+                   ) {
+                   hazikok[j].highlighted = 1;
+                } else {
+                   hazikok[j].highlighted = 0;   
+                }
+            }
             refresh();
         }
-        console.log("kikelet");
     }
-    
 }
+    
+
 
 
 function draw() {
@@ -519,7 +514,7 @@ function draw() {
 }
 
 class haziko{
-    constructor(x,y,w,l,name,uprice,ID,size,price,distr,loc,prop,cond,ext,liked,parking,view,garden,url){
+    constructor(pidx,x,y,w,l,name,uprice,ID,size,price,distr,loc,prop,cond,ext,liked,parking,view,garden,url){
         this.pointx=x;
         this.pointy=y;
         this.width=w;
@@ -542,6 +537,8 @@ class haziko{
         this.brightness = 50;
         this.alpha = 100;
         this.selected = 0;
+        this.highlighted = 1;
+        this.myidx = pidx;
     }
     /*clicked(x,y){
         var d = dist(x,y,this.pointx,this.pointy)
@@ -556,12 +553,7 @@ class haziko{
     show(){
         //stroke(120);
         mTexture.noStroke();
-        if (this.selected == 0) {
-            mTexture.fill (this.brightness, this.alpha);    
-        }
-        else{
-            mTexture.fill (220, 255);
-        }
+        mTexture.fill (this.brightness, this.alpha);    
         mTexture.rect (this.pointx,this.pointy,this.width,this.length);
         mTexture.triangle (this.pointx,this.pointy,this.pointx + this.width / 2, this.pointy - this.width/2, this.pointx + this.width, this.pointy);
         mTexture.stroke (30);
@@ -575,11 +567,20 @@ class haziko{
     showCanvas(){
         //stroke(120);
         noStroke();
-        if (this.selected == 0) {
-            fill (this.brightness, this.alpha);    
+        if (this.myidx != selectedidx) {
+            if(this.highlighted == 1){
+                fill(0,120,160,200);
+                console.log("ez");
+            }else{
+                fill(this.brightness, this.alpha);
+            }  
         }
         else{
-            fill (220, 255);
+            if(this.highlighted == 1){
+                fill(0,120,180,255);
+            }else{
+                fill(220,255);
+            }
         }
         rect (this.pointx,this.pointy,this.width,this.length);
         triangle (this.pointx,this.pointy,this.pointx + this.width / 2, this.pointy - this.width/2, this.pointx + this.width, this.pointy);

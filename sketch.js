@@ -33,6 +33,7 @@ var haziko1;
 var haziko2;
 
 var hazikok = [];
+var buttons = [];
 var todraw = 0;
 var avguprice = 0;
 var selectedidx = 0;
@@ -57,6 +58,9 @@ var icon1;
 var icon2;
 var icon3;
 var icon4;
+var prev_mouseX = -1, prev_mouseY = -1, prev_selectedidx= -1;
+var toRedraw = 1;
+
 
 function preload() {
     table = loadTable("lakasok 12v4.csv","csv","header");
@@ -217,12 +221,14 @@ function setup() {
         mTexture.text(string[i], margx1 - 24, y1 - 14 );
         mTexture.text("tetszik", margx1 - 24, y1);
     }
-    //placing of icons
+    //placing of buttons
     for (var i = 0; i<4; i++){
-        var y = margy1 + i * likey / 4 + likey / 8;
+        buttons.push(new button(displayWidth - margx4 - 2 * margx3 / 3,margy1 + i * likey / 4 + likey / 8));
+        buttons[i].show();
+       /* var y = margy1 + i * likey / 4 + likey / 8;
         mTexture.stroke(220);
         mTexture.noFill();
-        mTexture.ellipse(displayWidth - margx4 - 2 * margx3 / 3, y, 30,30);
+        mTexture.ellipse(displayWidth - margx4 - 2 * margx3 / 3, y, 30,30);*/
     }
     
     //adatlap steady images
@@ -381,10 +387,36 @@ function adatlap(i)
     text("állapot", boxleft + bx + bspx *2 + 5, boxtop + bspy * 3 + by * 3 +14);
     text("extrák", boxleft + bx + bspx *2 + 5, boxtop + bspy * 4 + by * 4 +14);
 }
+function refresh(pmouseX,pmouseY){
+    if (prev_mouseX != pmouseX || prev_mouseY != pmouseY){
+        holvagyok(pmouseX,pmouseY);
+        if (prev_selectedidx != selectedidx) {
+            image( mTexture, 0,0 );
+            if (selectedidx != -1){    
+                hazikok[selectedidx].showCanvas();
+                textSize(16);
+                noStroke();
+                textAlign(LEFT);
+                text(hazikok[selectedidx].name,hazikok[selectedidx].pointx + hazikok[selectedidx].width, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 20);
+                text(nfc(hazikok[selectedidx].uprice,0),hazikok[selectedidx].pointx + hazikok[selectedidx].width, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 40);
+                var w = textWidth(nfc(hazikok[selectedidx].uprice,0)) + 3;
+                text("HUF/m2",hazikok[selectedidx].pointx + hazikok[selectedidx].width + w, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 40);
+                adatlap(selectedidx);
+            }
+        }
+        prev_selectedidx = selectedidx;
+    }
+    prev_mouseX = pmouseX;
+    prev_mouseY = pmouseY;
+    
+    for (var i = 0; i < buttons.length; i++){
+        buttons[i].show();
+    }
+}
+
+function refresh(){
 
 
-function draw() {
-    holvagyok(mouseX,mouseY);
     image( mTexture, 0,0 );
     if (selectedidx != -1){    
         hazikok[selectedidx].showCanvas();
@@ -397,6 +429,41 @@ function draw() {
         text("HUF/m2",hazikok[selectedidx].pointx + hazikok[selectedidx].width + w, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 40);
         adatlap(selectedidx);
     }
+
+
+
+    
+    for (var i = 0; i < buttons.length; i++){
+        buttons[i].show();
+    }
+}
+
+function mousePressed(){
+    for (var i = 0; i < buttons.length; i++){
+        if (dist(buttons[i].buttonX, buttons[i].buttonY, mouseX, mouseY) < buttons[i].radius) {
+            buttons[i].pressed = 1 - buttons[i].pressed;
+            console.log(buttons[i].pressed);
+            refresh();
+        }
+        console.log("kikelet");
+    }
+    
+}
+
+
+function draw() {
+
+    if (prev_mouseX != pmouseX || prev_mouseY != pmouseY){
+        holvagyok(pmouseX,pmouseY);
+        if (prev_selectedidx != selectedidx) {
+            refresh();   
+        }
+        prev_selectedidx = selectedidx;
+    }
+    prev_mouseX = pmouseX;
+    prev_mouseY = pmouseY;
+    
+
     
     /*if (todraw == 0){
    //draws horizontal axis for unit prices
@@ -522,6 +589,26 @@ class haziko{
         //text (this.uprice,this.pointx,margy1+likey+50);
     }
   
+}
+
+class button {
+    constructor(x,y){
+        this.buttonX = x;
+        this.buttonY = y;
+        this.pressed = 0;
+        this.radius = 15;
+    }
+    show(){
+
+        if (this.pressed == 0) {
+            stroke(200);
+            noFill();  
+        } else {
+            noStroke();
+            fill(200,200);
+        }
+        ellipse(this.buttonX,this.buttonY,this.radius *2,this.radius * 2);
+    }
 }
     
     

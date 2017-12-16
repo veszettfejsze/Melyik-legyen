@@ -1,14 +1,10 @@
 var myFont;
 var table;
-//var sizemin = 0;
-//var sizemax = 0;
 var upricemin = 0;
 var upricemax = 0;
-//var sizeleft;
-//var sizeright;
 var upriceup;
 var upricedown;
-var margx1 = 80;
+var margx1 = 90;
 var margx2 = 40;
 var margx3 = 240;
 var margx4 = 40;
@@ -17,32 +13,20 @@ var margy2 = 60;
 var margy3 = 40;
 var padx = 40;
 var pady = 40;
-
 var upricewidth
-//var sizewidth
-
 var likey
-//var priceheight
-
-
 var distx = 40;
-
-
 var q = 0;
 var haziko1;
 var haziko2;
-
 var hazikok = [];
 var buttons = [];
 var todraw = 0;
 var avguprice = 0;
 var selectedidx = -1;
-
 var boxx_ = 100;
 var boxy_ = 250;
-
 var mTexture;
-
 var boxtop;
 var boxbott;
 var boxy;
@@ -57,19 +41,21 @@ var valtozo;
 var icon1;
 var icon2;
 var icon3;
-var icon4;
+var icon4, icon5, icon6, icon7, icon8;
 var prev_mouseX = -1, prev_mouseY = -1, prev_selectedidx= -1;
 var toRedraw = 1;
-
 
 function preload() {
     table = loadTable("lakasok 12v4.csv","csv","header");
     myFont = loadFont("../Arcon-Regular.otf");
-    icon1 = loadImage('images/like.png');
-   // icon2 = loadImage('images/parking.png');
-    icon3 = loadImage('images/view.png');
-    icon4 = loadImage('images/garden.png');
-    
+    icon1 = loadImage('images/like_c.png');
+    icon2 = loadImage('images/parking_d.png');
+    icon3 = loadImage('images/view_d.png');
+    icon4 = loadImage('images/garden_d.png');
+    icon5 = loadImage('images/like_l.png');
+    icon6 = loadImage('images/parking_l.png');
+    icon7 = loadImage('images/view_l.png');
+    icon8 = loadImage('images/garden_l.png');  
 }
 
 function setup() {
@@ -77,12 +63,12 @@ function setup() {
     createCanvas(displayWidth, displayHeight);
     background(80);
     textFont(myFont);
-    // textSize(24);
+
     // this part is drawing everything once into the mTexture object
     mTexture = createGraphics( displayWidth, displayHeight );
     mTexture.background(80);
     
-    //font beállítása
+    //font 
     mTexture.textFont(myFont);
     
     //defining area to draw records to
@@ -91,10 +77,8 @@ function setup() {
     
     //looking up min and max unit price
     var rows = table.getRows();
-
     upricemin = 9999999;
     upricemax = 0;
-    
   for (var r = 0; r < rows.length; r++) {
     var uprice = rows[r].getNum("unitprice");
  
@@ -107,10 +91,7 @@ function setup() {
         //print(upricemin);
         //print(upricemax);
   }
-  
   var upricediff = upricemax-upricemin;
-
-    //print(upricediff);
     upriceleft = margx1 + padx;
     upriceright = displayWidth -padx - margx2 - margx3 - margx4;
     likeup = margy1;
@@ -159,11 +140,7 @@ function setup() {
     lakasrec.x = map(lakasrec.uprice, upricemin, upricemax, upriceleft, upriceright);
     lakasrec.y = map(lakasrec.loc + lakasrec.prop + lakasrec.cond + lakasrec.extr, 0, 12, margy1 + likey, margy1);
     lakasrec.h = map(lakasrec.loc + lakasrec.cond + lakasrec.prop + lakasrec.extr, 0, 12, 0, likey);
-    
-    //print(lakasrec.x);
-    //print(lakasrec.y);
-    //print(lakasrec.h);
-    //hazikok[r] = new haziko(lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice);
+
     hazikok.push(new haziko(r, lakasrec.x, lakasrec.y, lakasrec.w, lakasrec.h,lakasrec.name,lakasrec.uprice, lakasrec.ID,lakasrec.size, lakasrec.price, lakasrec.distr, lakasrec.loc, lakasrec.prop, lakasrec.cond, lakasrec.extr, lakasrec.liked, lakasrec.parking, lakasrec.view, lakasrec.garden, lakasrec.url));
     }
     
@@ -175,6 +152,7 @@ function setup() {
     //text - average unit price
     mTexture.noStroke();
     mTexture.fill(160);
+    mTexture.textSize(18);
     mTexture.text("átlagos egységár (HUF/m2)",avgx + 8, margy1 - 4);
 
     //draws horizontal axis for unit prices
@@ -184,16 +162,13 @@ function setup() {
         x2 : 0,
         y2 : 0,
     }
-
     baseline.x1 = margx1;
     baseline.y1 = margy1 + likey;
     baseline.x2 = displayWidth - margx2-margx3-margx4;
     baseline.y2 = baseline.y1;
     mTexture.stroke(220);
- 
     mTexture.line(baseline.x1,baseline.y1,baseline.x2,baseline.y2);
 
-    
     //draws arrow tip on above line (tip length = lakasrec.w *1,5)
     mTexture.noStroke();
     mTexture.fill(200);
@@ -218,12 +193,15 @@ function setup() {
         mTexture.noStroke();
         mTexture.fill(220);
         mTexture.textAlign(RIGHT);
-        mTexture.text(string[i], margx1 - 24, y1 - 14 );
+        mTexture.text(string[i], margx1 - 24, y1 - 17 );
         mTexture.text("tetszik", margx1 - 24, y1);
     }
     //placing of buttons
+    var names = ["kedvenc","jó garázs","panoráma","kertes"];
+    var icons = [icon5,icon6,icon7,icon8];
     for (var i = 0; i<4; i++){
-        buttons.push(new button(displayWidth - margx4 - 2 * margx3 / 3,margy1 + i * likey / 4 + likey / 8));
+        
+        buttons.push(new button( displayWidth - margx4 - 2 * margx3 / 3,margy1 + i * likey / 4 + likey / 8, names[i],icons[i]));
         buttons[i].show();
        /* var y = margy1 + i * likey / 4 + likey / 8;
         mTexture.stroke(220);
@@ -248,20 +226,15 @@ function setup() {
     mTexture.noStroke();
     mTexture.fill(220,220,220,130);
     //mTexture.rect(80,430,880,800);
-    mTexture.rect(boxleft, boxtop, boxx, boxy);
+    mTexture.rect(boxleft, boxtop, boxx, boxy, 15);
     
-    
-
-
    /*for (var i=0; i< hazikok.length; i++) {
         //hazikok[i].show();
    } */
     refresh();
-
-
 }
 function holvagyok(x,y) 
-//defines which exact record polygon is selected
+//defines which exact record polygon is selected - mouse is over it
 {
     var dist = 9999;
     var idx = -1;
@@ -313,15 +286,12 @@ function adatlap(i)
     //adatlap background rectangle
     noStroke();
     fill(220,220,220,180);
-    rect(boxleft, boxtop, boxx, boxy);
+    rect(boxleft, boxtop, boxx, boxy,15);
     
     noStroke();
-    //fill(220,220,220,130);
-    //rect(boxleft, boxtop, boxx, boxy);
     fill(20);
     text(hazikok[i].name,boxleft + bspx, boxtop + bspy + by);
     textAlign(RIGHT);
-    //text(hazikok[i].ID, displayWidth - margx1 - margx2 - margx3 - margx4 - 5, margy1 + likey + margy2 + 20 );
     stroke (60);
     line(boxleft + bspx, boxtop + bspy + by + bspy /2, boxright - bspx, boxtop + bspy + by + bspy /2);
     fill(40);
@@ -338,22 +308,19 @@ function adatlap(i)
     //text(hazikok[i].url, boxleft + bspx + valtozo, boxtop + bspy *5 +by *5 );
     //kiszámoltatni a leghosszabb stringet és annak a méretét beadni a 80 px helyett
     
-    //ikonok helyei
+    //showing icons on adatlap
     if (hazikok[i].liked == 1) {
-        image(icon1, boxleft + 3 * bspx + 2 * bx, boxtop + bspy);
+        image(icon1, boxleft + 3 * bspx + 2 * bx, boxtop + bspy + 10);       
     }
-   // if (hazikok[i].parking == 1) {
-     //   image(icon2, boxleft + 3 * bspx + 2,4 * bx, boxtop + 2* bspy + by);
-    //}
+    if (hazikok[i].parking == 1) {
+        image(icon2, boxleft + 6 * bspx + 2 * bx, boxtop + bspy + 10);
+    }
     if (hazikok[i].view == 1) {
-        image(icon3, boxleft + 3 * bspx + 2 * bx, boxtop + 3* bspy + 2 * by);
+        image(icon3, boxleft + 9 * bspx + 2 * bx, boxtop + bspy + 10);
     }
     if (hazikok[i].garden == 1) {
-        image(icon4, boxleft + 3 * bspx + 2* bx, boxtop + 4* bspy + 3 * by);
-    }
-
-    //fill(220,220);
-    
+        image(icon4, boxleft + 12 * bspx + 2* bx, boxtop + bspy + 10);
+    } 
     /*console.log(bspx);
     for (var i=0; i< 4; i++) {
          var ybx =  by * (1 +i);
@@ -371,7 +338,7 @@ function adatlap(i)
         rect(boxleft + bx + bspx * 2, (boxtop + bspy * (i + 1) + by * (i + 1) - 20 ), bx, 20);
         
     }
-    fill(60,220);
+    fill(0,120,160,200);
     rect(boxleft + bx + bspx *2, (boxtop + bspy *1 + by * 1) - 20, loclength, 20);
     rect(boxleft + bx + bspx *2, (boxtop + bspy *2 + by * 2) - 20, proplength, 20);
     rect(boxleft + bx + bspx *2, (boxtop + bspy *3 + by * 3) - 20, condlength, 20);
@@ -388,36 +355,31 @@ function adatlap(i)
     text("extrák", boxleft + bx + bspx *2 + 5, boxtop + bspy * 4 + by * 4 +14);
 }
 
-
 function refresh(){
 
-    console.log("refresh");
     image( mTexture, 0,0 );
         for (var i = 0; i< hazikok.length; i++){
              hazikok[i].showCanvas();
-            console.log(i);
         }
-
     if (selectedidx != -1){    
-       
         textSize(16);
         noStroke();
         fill(220);
         textAlign(LEFT);
-        text(hazikok[selectedidx].name,hazikok[selectedidx].pointx + hazikok[selectedidx].width, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 20);
-        text(nfc(hazikok[selectedidx].uprice,0),hazikok[selectedidx].pointx + hazikok[selectedidx].width, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 40);
+        text(hazikok[selectedidx].name,hazikok[selectedidx].pointx + hazikok[selectedidx].width, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 30);
+        text(nfc(hazikok[selectedidx].uprice,0),hazikok[selectedidx].pointx + hazikok[selectedidx].width, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 50);
         var w = textWidth(nfc(hazikok[selectedidx].uprice,0)) + 3;
-        text("HUF/m2",hazikok[selectedidx].pointx + hazikok[selectedidx].width + w, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 40);
+        text("HUF/m2",hazikok[selectedidx].pointx + hazikok[selectedidx].width + w, hazikok[selectedidx].pointy + hazikok[selectedidx].length + 50);
         adatlap(selectedidx);
     }
-
-
-
-    
     for (var i = 0; i < buttons.length; i++){
         buttons[i].show();
     }
 }
+/*function link(url) {
+    window.location.href = "<a href="http://www.google.com" target="_blank" rel="nofollow">http://www.google.com</a>";
+  //winName && open(url, winName, options) || (location = url);
+}*/
 
 function mousePressed(){
     for (var i = 0; i < buttons.length; i++){
@@ -439,11 +401,12 @@ function mousePressed(){
                 }
             }
             refresh();
+
+            }
         }
     }
-}
-    
 
+    
 
 
 function draw() {
@@ -458,9 +421,7 @@ function draw() {
     prev_mouseX = pmouseX;
     prev_mouseY = pmouseY;
     
-
-    
-    /*if (todraw == 0){
+     /*if (todraw == 0){
    //draws horizontal axis for unit prices
     var baseline = {
         x1 : 0,
@@ -491,16 +452,9 @@ function draw() {
         stroke(220);
         point(x1, y1);   
         line (margx1 - 20, y1,margx1, y1);
-    }
-        
-        
-    }
-    
-    //line (pref_axis.x1 = x1(i))
-    
-
-        
-    
+    }    
+    } 
+    //line (pref_axis.x1 = x1(i))   
     //haziko1.show();
    for (var i=0; i< hazikok.length; i++) {
         hazikok[i].show();
@@ -570,47 +524,93 @@ class haziko{
         if (this.myidx != selectedidx) {
             if(this.highlighted == 1){
                 fill(0,120,160,200);
-                console.log("ez");
+                stroke (30);
+                line (this.pointx + this.width /2, this.pointy + this.length +1, this.pointx + this.width / 2, this.pointy + this.length + 15 );
             }else{
                 fill(this.brightness, this.alpha);
+                stroke (30);
+                line (this.pointx + this.width /2, this.pointy + this.length +1, this.pointx + this.width / 2, this.pointy + this.length + 15 );
             }  
         }
         else{
             if(this.highlighted == 1){
-                fill(0,120,180,255);
+                fill(245,245);
+                stroke (245);
+                line (this.pointx + this.width /2, this.pointy + this.length +1, this.pointx + this.width / 2, this.pointy + this.length + 15 );
             }else{
                 fill(220,255);
+                stroke (30);
+                line (this.pointx + this.width /2, this.pointy + this.length +1, this.pointx + this.width / 2, this.pointy + this.length + 15 );
             }
         }
+        noStroke();
         rect (this.pointx,this.pointy,this.width,this.length);
         triangle (this.pointx,this.pointy,this.pointx + this.width / 2, this.pointy - this.width/2, this.pointx + this.width, this.pointy);
-        stroke (30);
-        line (this.pointx + this.width /2, this.pointy + this.length +1, this.pointx + this.width / 2, this.pointy + this.length + 15 );
+        //stroke (30);
+        //line (this.pointx + this.width /2, this.pointy + this.length +1, this.pointx + this.width / 2, this.pointy + this.length + 15 );
         //text (this.name,this.pointx,margy1+likey+20);
         //text (this.uprice,this.pointx,margy1+likey+50);
     }
-  
 }
 
 class button {
-    constructor(x,y){
+    constructor(x,y,name,img){
         this.buttonX = x;
         this.buttonY = y;
         this.pressed = 0;
-        this.radius = 15;
+        this.radius = 30;
+        this.name = name;
+        this.img = img;
+    }
+    show(){
+        push();
+        if (this.pressed == 0) {
+            
+            tint(255,120);
+            image(this.img,this.buttonX - this.radius + 5,this.buttonY - this.radius + 5);
+         
+        
+        } else {
+            image(this.img,this.buttonX - this.radius + 5,this.buttonY - this.radius + 5);
+
+            //noStroke();
+            //fill(200,200);
+        }
+        pop();
+        noFill();
+        stroke(220);
+        ellipse(this.buttonX,this.buttonY,this.radius *2,this.radius * 2);
+        noStroke();
+        fill(220,245);
+        textSize(18);
+        textAlign(RIGHT);
+        text(this.name, this.buttonX - this.radius - 7, this.buttonY + 7);
+    }
+}
+/*class url {
+    constructor(x,y,string){
+        this.linkX = x;
+        this.linkY = y;
+        this.url = string;
+        this.active = 0;
     }
     show(){
 
-        if (this.pressed == 0) {
-            stroke(200);
-            noFill();  
-        } else {
+        if (this.active == 0) {
             noStroke();
-            fill(200,200);
+            fill(255,120);
+            rect(this.linkX,this.linkY,this.linkX + 50, this.linkY +25);
+            fill(80);
+            text(this.url, this.linkX +8, this.linkY + 16);
+            
+        } else {
+            image(this.img,this.buttonX - this.radius + 5,this.buttonY - this.radius + 5);
+
+            //noStroke();
+            //fill(200,200);
         }
-        ellipse(this.buttonX,this.buttonY,this.radius *2,this.radius * 2);
     }
-}
+}*/
     
     
 

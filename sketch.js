@@ -46,8 +46,8 @@ var prev_mouseX = -1, prev_mouseY = -1, prev_selectedidx= -1;
 var toRedraw = 1;
 
 function preload() {
-    table = loadTable("lakasok 12v4.csv","csv","header");
-    myFont = loadFont("../Arcon-Regular.otf");
+    table = loadTable("lakasok12v4.csv","csv","header");
+    myFont = loadFont("Arcon-Regular.otf");
     icon1 = loadImage('images/like_c.png');
     icon2 = loadImage('images/parking_d.png');
     icon3 = loadImage('images/view_d.png');
